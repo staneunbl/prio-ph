@@ -4,7 +4,6 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 type WrapperTabProps = {
   children: React.ReactNode;
-  title?: string;
   showBackButton?: boolean;
   onBackPress?: () => void;
   rightComponent?: React.ReactNode;
@@ -13,11 +12,10 @@ type WrapperTabProps = {
 
 const WrapperTab = ({
   children,
-  title = "",
   showBackButton = false,
   onBackPress,
   rightComponent,
-  backgroundColor = "#0B1F17",
+  backgroundColor = "#1F3D22",
 }: WrapperTabProps) => {
   const insets = useSafeAreaInsets();
 
@@ -56,7 +54,6 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    backgroundColor: "#0B1F17",
     borderBottomWidth: 1,
     borderBottomColor: "rgba(255,255,255,0.08)",
   },

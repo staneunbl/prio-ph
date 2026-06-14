@@ -9,7 +9,7 @@ export default function TabLayout() {
         tabBarActiveTintColor: '#FFD84D',
         tabBarInactiveTintColor: 'rgba(255, 255, 255, 0.55)',
         tabBarStyle: {
-          backgroundColor: '#0B1F17',
+          backgroundColor: '#1F3D22',
           borderTopWidth: 0,
           height: 76,
           paddingBottom: 8,
@@ -44,51 +44,7 @@ export default function TabLayout() {
           ),
         }}
       />
-
-      {/* ALERTS */}
-      {/* <Tabs.Screen
-        name="alerts"
-        options={{
-          title: 'Alerts',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons 
-              name={focused ? "alert-circle" : "alert-circle-outline"} 
-              size={size} 
-              color={color} 
-            />
-          ),
-        }}
-      /> */}
-
-      {/* RADAR / MAP */}
-      {/* <Tabs.Screen
-        name="radar"
-        options={{
-          title: 'Radar',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons 
-            //   name={focused ? "radar" : "radio-outline"} 
-              size={size} 
-              color={color} 
-            />
-          ),
-        }}
-      /> */}
-
-      {/* PROFILE */}
-      {/* <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, size, focused }) => (
-            <Ionicons 
-              name={focused ? "person" : "person-outline"} 
-              size={size} 
-              color={color} 
-            />
-          ),
-        }}
-      /> */}
+      
     </Tabs>
   );
 }

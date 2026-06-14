@@ -9,7 +9,7 @@ export default function Index() {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.replace("/home");
-    }, 5000);
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);

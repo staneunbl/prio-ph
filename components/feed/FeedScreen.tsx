@@ -1,11 +1,14 @@
+
+import { mockData } from '@/data/live-feed';
 import { View } from 'react-native';
 import WrapperTab from '../../components/WrapperTab';
+import LiveFeed from './LiveFeed';
 
 export default function FeedScreen() {
   return (
-    <WrapperTab title="PRIO PH!">
+    <WrapperTab>
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        {/* <Text>Home Screen Content</Text> */}
+        <LiveFeed data={mockData} />
       </View>
     </WrapperTab>
   );
