@@ -16,12 +16,13 @@ const SplashScreen = () => {
   const statusBlink = useRef(new Animated.Value(1)).current;
 
   const orbAnim = useRef(new Animated.Value(0)).current;
+  const radarAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     const pulseLoop = Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
-          toValue: 1.04,
+          toValue: 1.05,
           duration: 1400,
           easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
@@ -40,37 +41,44 @@ const SplashScreen = () => {
         Animated.timing(statusBlink, {
           toValue: 0.3,
           duration: 600,
-          easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
         Animated.timing(statusBlink, {
           toValue: 1,
           duration: 600,
-          easing: Easing.inOut(Easing.ease),
           useNativeDriver: true,
         }),
       ])
     );
 
-    const orbLoop = Animated.loop(
+    const floatLoop = Animated.loop(
       Animated.timing(orbAnim, {
         toValue: 1,
-        duration: 10000,
+        duration: 9000,
         easing: Easing.linear,
         useNativeDriver: true,
       })
     );
 
-    const introAnim = Animated.parallel([
+    const radarLoop = Animated.loop(
+      Animated.timing(radarAnim, {
+        toValue: 1,
+        duration: 6000,
+        easing: Easing.linear,
+        useNativeDriver: true,
+      })
+    );
+
+    const intro = Animated.parallel([
       Animated.timing(fadeAnim, {
         toValue: 1,
-        duration: 600,
+        duration: 700,
         easing: Easing.out(Easing.quad),
         useNativeDriver: true,
       }),
       Animated.timing(slideAnim, {
         toValue: 0,
-        duration: 600,
+        duration: 700,
         easing: Easing.out(Easing.quad),
         useNativeDriver: true,
       }),
@@ -78,80 +86,64 @@ const SplashScreen = () => {
 
     pulseLoop.start();
     statusLoop.start();
-    orbLoop.start();
-    introAnim.start();
+    floatLoop.start();
+    radarLoop.start();
+    intro.start();
 
     return () => {
       pulseLoop.stop();
       statusLoop.stop();
-      orbLoop.stop();
+      floatLoop.stop();
+      radarLoop.stop();
     };
   }, []);
 
-  const orbFloatY = orbAnim.interpolate({
+  const floatY = orbAnim.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: [0, -14, 0],
+    outputRange: [0, -18, 0],
   });
 
-  const orbFloatYReverse = orbAnim.interpolate({
+  const floatYReverse = orbAnim.interpolate({
     inputRange: [0, 0.5, 1],
-    outputRange: [0, 14, 0],
+    outputRange: [0, 18, 0],
+  });
+
+  const radarRotate = radarAnim.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0deg', '360deg'],
   });
 
   return (
     <View style={styles.container}>
+
+      {/* RADAR SWEEP */}
       <Animated.View
         style={[
-          styles.orb,
-          styles.orb1,
-          { transform: [{ translateY: orbFloatY }] },
-        ]}
-      />
-      <Animated.View
-        style={[
-          styles.orb,
-          styles.orb2,
-          { transform: [{ translateY: orbFloatYReverse }] },
-        ]}
-      />
-      <Animated.View
-        style={[
-          styles.orb,
-          styles.orb3,
-          { transform: [{ translateY: orbFloatY }] },
-        ]}
-      />
-      <Animated.View
-        style={[
-          styles.orb,
-          styles.orb4,
-          { transform: [{ translateY: orbFloatYReverse }] },
-        ]}
-      />
-      <Animated.View
-        style={[
-          styles.orb,
-          styles.orb5,
-          { transform: [{ translateY: orbFloatY }] },
+          styles.radarRing,
+          { transform: [{ rotate: radarRotate }] },
         ]}
       />
 
-      {/* Status bar */}
+      {/* ORBS (RADAR STYLE) */}
+      <Animated.View
+        style={[styles.orb, styles.redOrb, { transform: [{ translateY: floatY }] }]}
+      />
+      <Animated.View
+        style={[styles.orb, styles.yellowOrb, { transform: [{ translateY: floatYReverse }] }]}
+      />
+      <Animated.View
+        style={[styles.orb, styles.blueOrb, { transform: [{ translateY: floatY }] }]}
+      />
+
+      {/* STATUS */}
       <Animated.View style={[styles.statusBar, { opacity: fadeAnim }]}>
-        <Animated.View
-          style={[styles.statusDot, { opacity: statusBlink }]}
-        />
+        <Animated.View style={[styles.statusDot, { opacity: statusBlink }]} />
         <Text style={styles.statusText}>SYSTEM ACTIVE</Text>
       </Animated.View>
 
-      {/* Sun / signal indicator */}
+      {/* SUN */}
       <Animated.View
-        style={[
-          styles.sunWrap,
-          {
-            transform: [{ scale: pulseAnim }],
-          },
-        ]}
+        style={[styles.sunWrap, { transform: [{ scale: pulseAnim }] }]}
       >
         <Image
           source={require('../assets/images/sun.png')}
@@ -160,7 +152,7 @@ const SplashScreen = () => {
         />
       </Animated.View>
 
-      {/* Logo */}
+      {/* LOGO */}
       <Animated.View
         style={[
           styles.logoContainer,
@@ -176,15 +168,16 @@ const SplashScreen = () => {
         </View>
         <View style={styles.divider} />
         <Text style={styles.subtitle}>
-          Emergency &amp; Climate Response System
+          Emergency & Climate Response
         </Text>
       </Animated.View>
 
+      {/* LOADER */}
       <View style={styles.loaderWrap}>
         <DotsLoader />
       </View>
 
-      <Text style={styles.tagline}>POWERED BY STANEUNBL</Text>
+      <Text style={styles.tagline}>POWERED BY STANEUNBl</Text>
     </View>
   );
 };
@@ -195,64 +188,66 @@ const styles = StyleSheet.create({
     backgroundColor: '#1F3D22',
     alignItems: 'center',
     justifyContent: 'center',
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
     overflow: 'hidden',
   },
 
-  orb: {
+  /* RADAR RING */
+  radarRing: {
     position: 'absolute',
-    backgroundColor: '#FFD84D',
-    borderRadius: 999,
-  },
-  orb1: {
-    width: 180,
-    height: 180,
-    top: 120,
-    left: -60,
-    opacity: 0.05,
-  },
-  orb2: {
-    width: 120,
-    height: 120,
-    top: 260,
-    right: -30,
-    opacity: 0.06,
-  },
-  orb3: {
-    width: 240,
-    height: 240,
-    bottom: 100,
-    left: -90,
-    opacity: 0.04,
-  },
-  orb4: {
-    width: 100,
-    height: 100,
-    bottom: 260,
-    right: 20,
-    opacity: 0.07,
-  },
-  orb5: {
-    width: 70,
-    height: 70,
-    top: 460,
-    right: 60,
-    opacity: 0.05,
-    backgroundColor: '#FFFFFF',
+    width: 420,
+    height: 420,
+    borderRadius: 210,
+    borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.06)',
+    opacity: 0.8,
   },
 
+  /* ORBS */
+  orb: {
+    position: 'absolute',
+    borderRadius: 999,
+    opacity: 0.75,
+    shadowColor: '#000',
+    shadowOpacity: 0.4,
+    shadowRadius: 10,
+  },
+
+  redOrb: {
+    width: 18,
+    height: 18,
+    backgroundColor: '#FF3B3B',
+    top: 160,
+    left: 80,
+    shadowColor: '#FF3B3B',
+  },
+
+  yellowOrb: {
+    width: 22,
+    height: 22,
+    backgroundColor: '#FFD84D',
+    top: 260,
+    right: 60,
+    shadowColor: '#FFD84D',
+  },
+
+  blueOrb: {
+    width: 16,
+    height: 16,
+    backgroundColor: '#4DA3FF',
+    bottom: 220,
+    left: 120,
+    shadowColor: '#4DA3FF',
+  },
+
+  /* STATUS */
   statusBar: {
     position: 'absolute',
     top: 60,
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'rgba(255,255,255,0.06)',
-    borderColor: 'rgba(255,255,255,0.12)',
+    backgroundColor: 'rgba(255,255,255,0.05)',
     borderWidth: 1,
+    borderColor: 'rgba(255,255,255,0.08)',
     borderRadius: 20,
     paddingHorizontal: 14,
     paddingVertical: 6,
@@ -270,16 +265,19 @@ const styles = StyleSheet.create({
     letterSpacing: 2,
     fontWeight: '600',
   },
+
+  /* SUN */
   sunWrap: {
     position: 'absolute',
     top: -95,
-    alignSelf: 'center',
   },
   sunImage: {
-    width: 450,
-    height: 450,
+    width: 420,
+    height: 420,
+    opacity: 0.9,
   },
 
+  /* LOGO */
   logoContainer: {
     alignItems: 'center',
     marginTop: 50,
@@ -288,51 +286,41 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
   },
   logoText: {
-    fontFamily: 'ArchivoBlack-Regular',
-    fontSize: 56,
-    lineHeight: 62,
-    color: '#FFFFFF',
+    fontSize: 54,
+    fontWeight: '900',
+    color: '#fff',
     letterSpacing: 2,
   },
   logoAccent: {
     color: '#FFD84D',
   },
   divider: {
-    width: 40,
+    width: 50,
     height: 3,
     backgroundColor: '#FFD84D',
+    marginTop: 10,
+    marginBottom: 20,
     borderRadius: 2,
-    marginTop: 12,
-    marginBottom: 10,
   },
   subtitle: {
     fontSize: 12,
-    color: 'rgba(255,255,255,0.75)',
+    color: 'rgba(255,255,255,0.7)',
     letterSpacing: 1.2,
     textTransform: 'uppercase',
     textAlign: 'center',
-    paddingHorizontal: 20,
-    fontWeight: '600',
   },
+
   loaderWrap: {
-    alignItems: 'center',
     position: 'absolute',
     bottom: 90,
   },
-  loaderLabel: {
-    marginTop: 10,
-    fontSize: 11,
-    color: 'rgba(255,255,255,0.5)',
-    letterSpacing: 1,
-    textTransform: 'uppercase',
-  },
+
   tagline: {
     position: 'absolute',
-    bottom: 32,
+    bottom: 30,
     fontSize: 11,
-    color: 'rgba(255,255,255,0.6)',
+    color: 'rgba(255,255,255,0.5)',
     letterSpacing: 2,
-    textTransform: 'uppercase',
   },
 });
 
