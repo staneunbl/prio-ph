@@ -1,11 +1,11 @@
-import React, { useEffect, useRef } from 'react';
+import { useSplashAnimations } from '@/hooks/use-splash-animations';
+import React, { useRef } from 'react';
 import {
   Animated,
-  Easing,
   Image,
   StyleSheet,
   Text,
-  View,
+  View
 } from 'react-native';
 import { DotsLoader } from './shared/loader-dots';
 
@@ -18,85 +18,14 @@ const SplashScreen = () => {
   const orbAnim = useRef(new Animated.Value(0)).current;
   const radarAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    const pulseLoop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(pulseAnim, {
-          toValue: 1.05,
-          duration: 1400,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-        Animated.timing(pulseAnim, {
-          toValue: 1,
-          duration: 1400,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
-        }),
-      ])
-    );
-
-    const statusLoop = Animated.loop(
-      Animated.sequence([
-        Animated.timing(statusBlink, {
-          toValue: 0.3,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-        Animated.timing(statusBlink, {
-          toValue: 1,
-          duration: 600,
-          useNativeDriver: true,
-        }),
-      ])
-    );
-
-    const floatLoop = Animated.loop(
-      Animated.timing(orbAnim, {
-        toValue: 1,
-        duration: 9000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    );
-
-    const radarLoop = Animated.loop(
-      Animated.timing(radarAnim, {
-        toValue: 1,
-        duration: 6000,
-        easing: Easing.linear,
-        useNativeDriver: true,
-      })
-    );
-
-    const intro = Animated.parallel([
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 700,
-        easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
-      }),
-      Animated.timing(slideAnim, {
-        toValue: 0,
-        duration: 700,
-        easing: Easing.out(Easing.quad),
-        useNativeDriver: true,
-      }),
-    ]);
-
-    pulseLoop.start();
-    statusLoop.start();
-    floatLoop.start();
-    radarLoop.start();
-    intro.start();
-
-    return () => {
-      pulseLoop.stop();
-      statusLoop.stop();
-      floatLoop.stop();
-      radarLoop.stop();
-    };
-  }, []);
+  useSplashAnimations({
+    pulseAnim,
+    statusBlink,
+    orbAnim,
+    radarAnim,
+    fadeAnim,
+    slideAnim,
+  });
 
   const floatY = orbAnim.interpolate({
     inputRange: [0, 0.5, 1],
