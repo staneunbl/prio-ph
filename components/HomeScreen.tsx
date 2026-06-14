@@ -1,13 +1,14 @@
 import { useSplashAnimations } from "@/hooks/use-splash-animations";
+import { useRouter } from "expo-router";
 import React, { useEffect, useRef } from "react";
 import {
-    Animated,
-    Easing,
-    Image,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Animated,
+  Easing,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 
 interface AlertDotProps {
@@ -132,6 +133,7 @@ interface Props {
 }
 
 const HomeScreen = () => {
+  const router = useRouter();
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(24)).current;
   const statusBlink = useRef(new Animated.Value(1)).current;
@@ -164,10 +166,10 @@ const HomeScreen = () => {
         />
 
         {/* Status bar */}
-        <Animated.View style={[styles.statusBar, { opacity: fadeAnim }]}>
+        {/* <Animated.View style={[styles.statusBar, { opacity: fadeAnim }]}>
           <Animated.View style={[styles.statusDot, { opacity: statusBlink }]} />
           <Text style={styles.statusText}>SYSTEM ACTIVE</Text>
-        </Animated.View>
+        </Animated.View> */}
 
         {/* Alert dots */}
         <AlertDot
@@ -239,6 +241,7 @@ const HomeScreen = () => {
         <TouchableOpacity
           style={[styles.btn, styles.btnLogin]}
           activeOpacity={0.8}
+          onPress={() => router.push("/(tabs)/feed")}
         >
           <Text style={[styles.btnText, styles.btnLoginText]}>Login</Text>
         </TouchableOpacity>
